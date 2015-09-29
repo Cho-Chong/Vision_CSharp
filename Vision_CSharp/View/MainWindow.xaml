@@ -1,0 +1,56 @@
+﻿<Window x:Class="Vision_CSharp.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Vision_CSharp"
+        xmlns:visVM="clr-namespace:Vision_CSharp.ViewModel"
+        xmlns:visConv="clr-namespace:Vision_CSharp.View.Converters"
+        xmlns:visServInt="clr-namespace:Vision_CSharp.Services.Interfaces"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="600" Width="800">
+    <Window.Resources>
+        <visVM:ImageVM x:Key="ImageVM"/>
+        <visConv:ImageConverter x:Key="ImageConverter"/>
+    </Window.Resources>
+
+    <Grid DataContext="{StaticResource ImageVM}">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="20"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+
+
+            <Menu Grid.Row="0">
+                <MenuItem Header="Open Image" Command="{Binding OpenImage}"/>
+                <MenuItem Header="Save Image" Command="{Binding SaveImage}"/>
+            </Menu>
+            <Grid Grid.Row="1">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="80*"/>
+                    <ColumnDefinition Width="20*"/>
+                </Grid.ColumnDefinitions>
+
+                <Canvas Grid.Column="0">
+                    <Image Source="{Binding Path=ImagePath, Converter={StaticResource ImageConverter}}"/>
+                </Canvas>
+
+                <StackPanel Grid.Column="1" Orientation="Vertical" VerticalAlignment="Stretch">
+                    <Button Height="50" Content="Gray Scale" CommandParameter ="{x:Static visServInt:IMAGE_ALGO_TYPES.GRAYSCALE}" Command="{Binding ProcessImage}"/>
+                    <Button Height="50" Content="Canny Edge" CommandParameter ="{x:Static visServInt:IMAGE_ALGO_TYPES.CANNY_EDGE}" Command="{Binding ProcessImage}"/>
+                    <Button Height="50" Content="Invert" CommandParameter ="{x:Static visServInt:IMAGE_ALGO_TYPES.INVERT}" Command="{Binding ProcessImage}"/>
+                    <Button Height="50" Content="Sepia Tone" CommandParameter ="{x:Static visServInt:IMAGE_ALGO_TYPES.SEPIA}" Command="{Binding ProcessImage}"/>
+                    <Button Height="50" Content="Sharp" CommandParameter ="{x:Static visServInt:IMAGE_ALGO_TYPES.SHARP}" Command="{Binding ProcessImage}"/>
+                    <Button Height="50" Content="Gentle Sharp" CommandParameter ="{x:Static visServInt:IMAGE_ALGO_TYPES.GENTLE_SHARP}" Command="{Binding ProcessImage}"/>
+                    <Button Height="50" Content="Sharp Edge" CommandParameter ="{x:Static visServInt:IMAGE_ALGO_TYPES.SHARP_EDGE}" Command="{Binding ProcessImage}"/>
+                    <Button Height="50" Content="Emboss" CommandParameter ="{x:Static visServInt:IMAGE_ALGO_TYPES.EMBOSS}" Command="{Binding ProcessImage}"/>
+                    <Button Height="50" Content="Blur" CommandParameter ="{x:Static visServInt:IMAGE_ALGO_TYPES.BLUR}" Command="{Binding ProcessImage}"/>
+                    <Button Height="50" Content="Motion Blur" CommandParameter ="{x:Static visServInt:IMAGE_ALGO_TYPES.MOTION_BLUR}" Command="{Binding ProcessImage}"/>
+                </StackPanel>
+            </Grid>
+
+        </Grid>
+
+    </Grid>
+</Window>
