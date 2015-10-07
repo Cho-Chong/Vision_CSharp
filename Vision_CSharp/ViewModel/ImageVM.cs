@@ -18,6 +18,7 @@ namespace Vision_CSharp.ViewModel
     public class ImageVM : BaseVM
     {
         string IMG_RES_DIR = "C:\\Users\\Spam\\Documents\\Visual Studio 2015\\Projects\\Resources\\Images\\";
+        string BACKUP_APPEND = "backup";
         string LENNA_IMG_NAME = "lenna.png";
         string VALVE_IMG_NAME = "valve.png";
         string FLOWER_IMG_NAME = "flower.png";
@@ -64,17 +65,32 @@ namespace Vision_CSharp.ViewModel
         //TODO: inject algos
         public ImageVM()
         {
-            this.ImagePath = IMG_RES_DIR + LENNA_IMG_NAME;
+            this.imagePath = IMG_RES_DIR + LENNA_IMG_NAME;
             this.OpenImage = new RelayCommand((l) => true, OpenFile);
             this.SaveImage = new RelayCommand((l) => true, SaveFile);
             this.ProcessImage = new RelayCommand((l) => true, processImageAlgo);
             this.imageService = new ImageFilterService();
+            CopyImage();
+        }
+
+        private void CopyImage()
+        {
+            if (File.Exists(this.imagePath))
+            {
+                var bitmap = new Bitmap(this.ImagePath);
+                string[] path_and_name = this.ImagePath.Split('.');
+
+                string working_path = path_and_name.First() + BACKUP_APPEND + '.' + path_and_name.Last();
+                bitmap.Save(working_path);
+                this.ImagePath = working_path;
+            }
         }
 
         private void processImageAlgo(object algo_type)
         {
             Task.Factory.StartNew(() =>
             {
+                //TODO: can race condition with itself...
                 if (algo_type is IMAGE_ALGO_TYPES)
                 {
                     var path = this.imagePath;
@@ -121,7 +137,8 @@ namespace Vision_CSharp.ViewModel
             var dialog = new OpenFileDialog();
             if( dialog.ShowDialog() == true)
             {
-                ImagePath = dialog.FileName;
+                imagePath = dialog.FileName;
+                CopyImage();
             }
         }
 
